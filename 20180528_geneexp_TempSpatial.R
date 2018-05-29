@@ -17,6 +17,7 @@ genes <-c("elav", "repo")
 quartz("Neuron vs. glia", 8,5)
 visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
 
+
 #Lawf markers
 genes <-c("eya", "hth", "hbn", "Lim1")
 quartz("Lawf markers", 8,5)
@@ -26,9 +27,15 @@ visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits 
 #This makes perfect sense. There are ase+, pros+, dpn- cells inb/w Lawfs and glia, which 
 #are the progenitor cells (also marked by 10C12-Gal4)
 #Also note that there are dpn+ cells, which cluster near Lawf/egmg progenitors (so these are some NBs)
-genes <-c("ase", "pros", "dpn")
-quartz("ase, pros, dpn", 8,5)
+genes <-c("ase", "pros", "eya", "dpn")
+quartz("ase, pros, eya, dpn", 8,5)
 visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+
+#Progenitor should express DE-Cad.
+genes <-c("shg")
+quartz("shg", 8,5)
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+
 
 #known glial markers
 #learned one thing: gcm turns off in Lawfs (reporter stays on, based on Vil's movies)
@@ -61,6 +68,14 @@ visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits 
 
 #####################
 
+#All Drosophila TFs
+
+#Netrin, Ephrin, Semaphorin, Slit receptor
+genes <-c("unc-5", "fra", "Eph", "PlexA", "PlexB",
+          "robo1", "robo2", "robo3")
+quartz("Guidance molecule receptors", 8,5)
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+
 #Bsh (Mi1, L4, L5)
 genes <-c("bsh")
 quartz("bsh", 8,5)
@@ -91,8 +106,6 @@ genes <-c("Fas2")
 quartz("Fas2", 8,5)
 visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
 
-
-
 #tOPC signaling molecules
 genes <-c("wg", "dpp")
 quartz("wg, dpp", 8,5)
@@ -108,5 +121,10 @@ genes <-c("Dscam2", "Lim1")
 quartz("Dscam2", 8,5)
 visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
 
-
+#### PICK OUT CLUSTER
+#### ID genes with least to most variance
+###Is lim1 in highest variance??
+###If yes, do other genes correlate with Lim1
+###Take ALL genes, get GO terms. ID TF's, etc.
+###Monocle with progenitor cluster, glia cluster, Lawf cluster
 
