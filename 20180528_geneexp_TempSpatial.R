@@ -15,13 +15,13 @@ print(dim(gbm_log))
 #Neuron vs. glia
 genes <-c("elav", "repo")
 quartz("Neuron vs. glia", 8,5)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 
 #Lawf markers
 genes <-c("eya", "hth", "hbn", "Lim1")
 quartz("Lawf markers", 8,5)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 #Lawf/eg/mg progenitor markers (ase+, pros+, dpn-)
 #This makes perfect sense. There are ase+, pros+, dpn- cells inb/w Lawfs and glia, which 
@@ -29,19 +29,19 @@ visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits 
 #Also note that there are dpn+ cells, which cluster near Lawf/egmg progenitors (so these are some NBs)
 genes <-c("ase", "pros", "eya", "dpn")
 quartz("ase, pros, eya, dpn", 8,5)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 #Progenitor should express DE-Cad.
 genes <-c("shg")
 quartz("shg", 8,5)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 
 #known glial markers
 #learned one thing: gcm turns off in Lawfs (reporter stays on, based on Vil's movies)
 genes <-c("repo", "Dll", "gcm", "bi")
 quartz("Known glial markers", 8,5)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 #Xin's table
 #all genes in Xin's table (dac is lamina marker, vvl = dfr)
@@ -50,21 +50,21 @@ genes <-c("Dll", "repo", "ap", "toy",
           "run", "ey", "Lim3", "hth", 
           "bsh", "Lim3", "Vsx1", "Vsx2", "svp", "pros")
 quartz("All of Xin's genes", 16,10)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 #only genes significantly expressed in specific clusters 10X data
 #NOTE: Dll, ap, ey are in Xavier's paper; non-overlappingly exp'd in medulla neurons
 genes <-c("Dll", "repo", "ap", "toy", 
           "oc", "dac", "ey", "hth", 
           "Vsx1", "Vsx2", "pros")
 quartz("Xin's genes expd in 10X data", 16,10)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 #only genes significantly expressed in specific clusters 10X data
 #minus Dll, repo (only in glia cluster, as expected)
 #re-ordered
 genes <-c("toy", "dac", "ey", "pros", "hth",
           "Vsx1", "Vsx2", "ap", "oc")
 quartz("Xin's genes expd in unidentified clusters", 16,10)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 #####################
 
@@ -74,52 +74,57 @@ visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits 
 genes <-c("unc-5", "fra", "Eph", "PlexA", "PlexB",
           "robo1", "robo2", "robo3")
 quartz("Guidance molecule receptors", 8,5)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 #Bsh (Mi1, L4, L5)
 genes <-c("bsh")
 quartz("bsh", 8,5)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 #Spatial factors
 genes <-c("Vsx1", "Vsx2", "Optix", "Rx")
 quartz("Vsx1, Vsx2, optix, Rx", 8,5)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 #dying cells
 genes <-c("rpr", "hid", "grim")
 quartz("Rx", 8,5)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 #cadherin
 genes <-c("shg")
 quartz("shg", 8,5)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 #chinmo 
 genes <-c("chinmo")
 quartz("chinmo", 8,5)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 #fas2 
 genes <-c("Fas2")
 quartz("Fas2", 8,5)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 #tOPC signaling molecules
 genes <-c("wg", "dpp")
 quartz("wg, dpp", 8,5)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 #Dscam
 genes <-c("Dscam2", "Dscam1")
 quartz("Dscam2", 8,5)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 #Dscam2 and Lim1 comparison
 genes <-c("Dscam2", "Lim1")
 quartz("Dscam2", 8,5)
-visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 1.5))
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
+
+#pros (In Xin's list, but worth having on its own)
+genes <-c("pros")
+quartz("pros", 8,5)
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
 #### PICK OUT CLUSTER
 #### ID genes with least to most variance
@@ -128,3 +133,6 @@ visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits 
 ###Take ALL genes, get GO terms. ID TF's, etc.
 ###Monocle with progenitor cluster, glia cluster, Lawf cluster
 
+###stress:
+###Hi MT
+###hsp
