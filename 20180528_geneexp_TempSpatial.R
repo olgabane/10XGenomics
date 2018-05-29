@@ -125,14 +125,3 @@ visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits 
 genes <-c("pros")
 quartz("pros", 8,5)
 visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
-
-#### PICK OUT CLUSTER
-#### ID genes with least to most variance
-###Is lim1 in highest variance??
-###If yes, do other genes correlate with Lim1
-###Take ALL genes, get GO terms. ID TF's, etc. [For TFs, could use Hammond et al 2013 list of ~998]
-###Monocle with progenitor cluster, glia cluster, Lawf cluster
-
-###stress:
-###Hi MT
-###hsp
