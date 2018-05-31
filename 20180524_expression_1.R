@@ -2,6 +2,8 @@
 #Load gene-barcode-matrix two ways - from raw data and using cellranger kit. 
 #Verify that matrix elements are equivalent. Convert sparse to full matrix.
 #Normalize matrix two ways - using cellranger kit and manually from raw data.
+#20180531 update: this code doesn't do exactly what it claims to do. I manually normalize matrix that result from cellranger, but not matrix.mtx file
+#For normalization of matrix.mtx file, see "20180531_GBMpulled.R"
 
 #load sparse matrix (.mtx) file
 setwd("/Users/Olga/Downloads/cellranger/count-Neuron/outs/filtered_gene_bc_matrices/cellranger/")
