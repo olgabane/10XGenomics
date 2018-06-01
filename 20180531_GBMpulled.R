@@ -86,37 +86,24 @@ m4 <-m2[,k20_barcodes]
 dim(m3)[2] == length(k10_barcodes) #returns TRUE
 dim(m4)[2] == length(k20_barcodes) #returns TRUE
 
-#Save pulled matrices.
-#Initially, I saved as .csv, but this file fails to load properly in excel - it does not load all rows.
-setwd("/Users/Olga/Google Drive/Desplan Lab/Notebooks/Notebook 5/10X processing/20180531_GBMpulled/")
-write.table(m3, "AllClustersPulledFrom_k=10_GBM_Normalized.txt", sep = "\t")
-write.table(m4, "AllClustersPulledFrom_k=20_GBM_Normalized.txt", sep = "\t")
-#verify that tables saved with correct dimensions(load them back in, check dimensions)
-test1 <-read.table("AllClustersPulledFrom_k=10_GBM_Normalized.txt")
-test2 <-read.table("AllClustersPulledFrom_k=20_GBM_Normalized.txt")
-dim(test1)[2] == length(k10_barcodes) #returns TRUE
-dim(test2)[2] == length(k20_barcodes) #returns TRUE
-rm(test1, test2)
-
 ####Now that I've pulled glia, Lawfs, progenitors out of larger matrix, I will split this into 3 matrices for the three diff cell types
 #continue working with m4 (K=20 pulled clusters)
 #GBM with glia, progenitors and Lawfs
+#I will save these files a bit further down the code (when I've added gene names)
+setwd("/Users/Olga/Google Drive/Desplan Lab/Notebooks/Notebook 5/10X processing/20180531_GBMpulled/")
 k20_repo_progenitor_lawf_cluster_GBM <-m4
 #GBM with glia only
 k20_repo_cluster <- k20_yto[which(k20_yto[,6]=="red" | k20_yto[,6]=="darkred"), ]
 k20_repo_cluster_barcodes <- as.vector(k20_repo_cluster$Barcode)
 k20_repo_cluster_GBM  <-m2[,k20_repo_cluster_barcodes]
-write.table(k20_repo_cluster_GBM, "RepoClustersPulledFrom_k=20_GBM_Normalized.txt", sep = "\t")
 #GBM with progenitor only 
 k20_progenitor_cluster <- k20_yto[which(k20_yto[,6]=="cyan"), ]
 k20_progenitor_cluster_barcodes <- as.vector(k20_progenitor_cluster$Barcode)
 k20_progenitor_cluster_GBM  <-m2[,k20_progenitor_cluster_barcodes]
-write.table(k20_progenitor_cluster_GBM, "ProgenitorClustersPulledFrom_k=20_GBM_Normalized.txt", sep = "\t")
 #GBM with Lawfs only
 k20_Lawf_cluster <- k20_yto[which(k20_yto[,6]=="pink2" | k20_yto[,6]=="tan3"), ]
 k20_Lawf_cluster_barcodes <- as.vector(k20_Lawf_cluster$Barcode)
 k20_Lawf_cluster_GBM  <-m2[,k20_Lawf_cluster_barcodes]
-write.table(k20_Lawf_cluster_GBM, "LawfClustersPulledFrom_k=20_GBM_Normalized.txt", sep = "\t")
 
 #two different ways to verify that split matrices are correct
 #check that I have the right number of cells if I add back the three matrices
@@ -162,4 +149,40 @@ plot(k20_yto[which(k20_yto[,6]=="pink2" | k20_yto[,6]=="tan3"), ]$TSNE.1,
      text(-50, c(45, 40, -40), labels=c("Lawf", "Lawf", "852 cells"), 
           col =  c('pink2', 'tan3', 'black'), adj = -2, pos=4, font = 2))
 
+#Get FBN ID's, convert to Gene names and symbols
+GenesAsFBN_11954<-rownames(k20_Lawf_cluster_GBM)
+#converted to gene name and symbols in FlyBase; load resulting file, rename columns
+GenesAsFBN_11954_converted_GeneSymbol <- read.csv("GenesAsFBN_11954_converted_GeneSymbol.txt", sep = "\t")
+colnames(GenesAsFBN_11954_converted_GeneSymbol) <- c("FBN_Flybase", "GeneName_FlyBase", "GeneSymbol_Flybase")
 
+#Add gene names to GBM's created earlier
+library(tibble)
+k20_repo_progenitor_lawf_cluster_GBM_wGeneNames <- data.frame(k20_repo_progenitor_lawf_cluster_GBM)
+k20_repo_progenitor_lawf_cluster_GBM_wGeneNames <- add_column(k20_repo_progenitor_lawf_cluster_GBM_wGeneNames, GenesAsFBN_11954_converted_GeneSymbol$FBN_Flybase, .before=1)
+k20_repo_progenitor_lawf_cluster_GBM_wGeneNames <- add_column(k20_repo_progenitor_lawf_cluster_GBM_wGeneNames, GenesAsFBN_11954_converted_GeneSymbol$GeneName_FlyBase, .before=2)
+k20_repo_progenitor_lawf_cluster_GBM_wGeneNames <- add_column(k20_repo_progenitor_lawf_cluster_GBM_wGeneNames, GenesAsFBN_11954_converted_GeneSymbol$GeneSymbol_Flybase, .before=3)
+colnames(k20_repo_progenitor_lawf_cluster_GBM_wGeneNames)[1:3] <- c("FBN_Flybase", "GeneName_FlyBase", "GeneSymbol_Flybase")
+k20_Lawf_cluster_GBM_wGeneNames <- data.frame(k20_Lawf_cluster_GBM)
+k20_Lawf_cluster_GBM_wGeneNames <- add_column(k20_Lawf_cluster_GBM_wGeneNames, GenesAsFBN_11954_converted_GeneSymbol$FBN_Flybase, .before=1)
+k20_Lawf_cluster_GBM_wGeneNames <- add_column(k20_Lawf_cluster_GBM_wGeneNames, GenesAsFBN_11954_converted_GeneSymbol$GeneName_FlyBase, .before=2)
+k20_Lawf_cluster_GBM_wGeneNames <- add_column(k20_Lawf_cluster_GBM_wGeneNames, GenesAsFBN_11954_converted_GeneSymbol$GeneSymbol_Flybase, .before=3)
+colnames(k20_Lawf_cluster_GBM_wGeneNames)[1:3] <- c("FBN_Flybase", "GeneName_FlyBase", "GeneSymbol_Flybase")
+k20_repo_cluster_GBM_wGeneNames <- data.frame(k20_repo_cluster_GBM)
+k20_repo_cluster_GBM_wGeneNames <- add_column(k20_repo_cluster_GBM_wGeneNames, GenesAsFBN_11954_converted_GeneSymbol$FBN_Flybase, .before=1)
+k20_repo_cluster_GBM_wGeneNames <- add_column(k20_repo_cluster_GBM_wGeneNames, GenesAsFBN_11954_converted_GeneSymbol$GeneName_FlyBase, .before=2)
+k20_repo_cluster_GBM_wGeneNames <- add_column(k20_repo_cluster_GBM_wGeneNames, GenesAsFBN_11954_converted_GeneSymbol$GeneSymbol_Flybase, .before=3)
+colnames(k20_repo_cluster_GBM_wGeneNames)[1:3] <- c("FBN_Flybase", "GeneName_FlyBase", "GeneSymbol_Flybase")
+k20_progenitor_cluster_GBM_wGeneNames <- data.frame(k20_progenitor_cluster_GBM)
+k20_progenitor_cluster_GBM_wGeneNames <- add_column(k20_progenitor_cluster_GBM_wGeneNames, GenesAsFBN_11954_converted_GeneSymbol$FBN_Flybase, .before=1)
+k20_progenitor_cluster_GBM_wGeneNames <- add_column(k20_progenitor_cluster_GBM_wGeneNames, GenesAsFBN_11954_converted_GeneSymbol$GeneName_FlyBase, .before=2)
+k20_progenitor_cluster_GBM_wGeneNames <- add_column(k20_progenitor_cluster_GBM_wGeneNames, GenesAsFBN_11954_converted_GeneSymbol$GeneSymbol_Flybase, .before=3)
+colnames(k20_progenitor_cluster_GBM_wGeneNames)[1:3] <- c("FBN_Flybase", "GeneName_FlyBase", "GeneSymbol_Flybase")
+
+#Save files
+#Note again that .txt files appear to load OK in excel, but some rows are missing. 
+#However, I verified in bash using wc that there are 11955 lines, as expected, in each of these files (wc -l .txt)
+#SO, I should only load these in R, not in excel!
+write.table(k20_repo_cluster_GBM_wGeneNames, "k20_repo_cluster_GBM_wGeneNames.txt", sep = "\t")
+write.table(k20_progenitor_cluster_GBM_wGeneNames, "k20_progenitor_cluster_GBM_wGeneNames.txt", sep = "\t")
+write.table(k20_Lawf_cluster_GBM_wGeneNames, "k20_Lawf_cluster_GBM_wGeneNames.txt", sep = "\t")
+write.table(k20_repo_progenitor_lawf_cluster_GBM_wGeneNames, "k20_repo_progenitor_lawf_cluster_GBM_wGeneNames.txt", sep = '\t')
