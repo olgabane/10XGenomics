@@ -113,21 +113,11 @@ title(xlab = "Expression", line = 2)
 box(lty = 1)
 axis(1, at= c(0.7, 1.9), labels = c("0", ">0"), lty=0)
 
+#Get location for where to place title. Commented out.
+#locations <- locator(4)
+text(x = c(-8.5), y = c(3450, 2550, 1670, 750), labels = c("Lim1", "hth", "hbn", "eya"), adj = c(0,0), font =2)
+text(x = c(-9.2, -.5), y = 1720, labels = c("Log10(Normalized UMI)", "Cells"), srt = 90)
 
-
-
-
-
-
-
-
-####NEXT: Delete genes with 0 when summed across all cells
-  #how many are left?
-#####Sum UMIs of all genes. 
-  #Look at most highly exp'd
-#####Look at most variable genes across Lawfs. 
-  #Is Lim1 one of them?
-  #If yes, do any correlate w Lim1?
 
 
 
