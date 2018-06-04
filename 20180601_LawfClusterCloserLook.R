@@ -50,23 +50,74 @@ layout(matrix(c(1:8), nrow = 4, byrow = TRUE), width = c(4,2))
 par(mar = c(0,2,0,0), oma =  c(6,0,1,1), xpd = NA)
 barplot(rep(1, 852), col = Lim1_colors, border =Lim1_colors, xlab = "852 'Lawf' cells", axes = FALSE)
 title(ylab = "Lim1", line = -1, cex.lab = 1.5)
-plot(fourgenes_df_ordered$Lim1, col=Lim1_colors, ylab = "", xlab = "", pch=16, xaxt = 'n', cex = 0.5)
+plot(fourgenes_df_ordered$Lim1, col=Lim1_colors, ylab = "", xlab = "", pch=16, xaxt = 'n', cex = 0.5, axes = FALSE)
+box(lty=1)
+axis(2, labels = c("0", "1"), at = c(0, 1))
 barplot(rep(1, 852), col = hth_colors, border =hth_colors, xlab = "852 'Lawf' cells", axes = FALSE)
 title(ylab = "hth", line = -1, cex.lab = 1.5)
-plot(fourgenes_df_ordered$hth, col=hth_colors, ylab = "", xlab = "", pch=16, xaxt = 'n', cex = 0.5)
+plot(fourgenes_df_ordered$hth, col=hth_colors, ylab = "", xlab = "", pch=16, xaxt = 'n', cex = 0.5, axes = FALSE)
+box(lty=1)
+axis(2, labels = c("0", "1"), at = c(0, 1))
 barplot(rep(1, 852), col = hbn_colors, border =hbn_colors, xlab = "852 'Lawf' cells", axes = FALSE)
 title(ylab = "hbn", line = -1, cex.lab = 1.5)
-plot(fourgenes_df_ordered$hbn, col=hbn_colors, ylab = "", xlab = "", pch=16, xaxt = 'n', cex = 0.5)
+plot(fourgenes_df_ordered$hbn, col=hbn_colors, ylab = "", xlab = "", pch=16, xaxt = 'n', cex = 0.5, axes = FALSE)
+box(lty=1)
+axis(2, labels = c("0", "1"), at = c(0, 1))
 title(ylab = "Log10(Normalized UMI)", line = 2, adj = 0.2)
-barplot(rep(1, 852), col = eya_colors, border =eya_colors, xlab = "852 'Lawf' cells", axes = FALSE)
+barplot(rep(1, 852), col = eya_colors, border =eya_colors, axes = FALSE)
 title(ylab = "eya", line = -1, cex.lab = 1.5)
-plot(fourgenes_df_ordered$eya, col=eya_colors, xlab = "852 'Lawf' cells", ylab = "", pch=16, cex = 0.5)
+title(xlab = "852 'Lawf' cells")
+plot(fourgenes_df_ordered$eya, col=eya_colors, xlab = "852 'Lawf' cells", ylab = "", pch=16, cex = 0.5, axes = FALSE)
+box(lty=1)
+axis(1, labels = c("0","852"), at = c(0, 852))
+axis(2, labels = c("0", "1"), at = c(0, 1))
 
+###Plot above data a third way: most compact, gives most info
+quartz("title", 6, 4)
+par(mar = c(0,4,0,0), oma =  c(6,0,2,1), xpd = NA)
+layout(matrix(c(1, 5, 
+                2, 6, 
+                3, 7, 
+                4, 8), nrow = 4, byrow = TRUE), widths = c(2.5, 1))
+plot(fourgenes_df_ordered$Lim1, col=ifelse(fourgenes_df_ordered$Lim1 == 0, "red", "blue"), ylab = "", xlab = "", pch=16, xaxt = 'n', cex = 0.5, ylim=c(0,1.8), yaxt='n')
+axis(2, at = c(0, 1.8), labels = c("0", "1.8"), las = 1)
+plot(fourgenes_df_ordered$hth, col=ifelse(fourgenes_df_ordered$hth == 0, "red", "blue"), ylab = "", xlab = "", pch=16, xaxt = 'n', cex = 0.5, ylim=c(0,1.8), yaxt='n')
+plot(fourgenes_df_ordered$hbn, col=ifelse(fourgenes_df_ordered$hbn == 0, "red", "blue"), ylab = "", xlab = "", pch=16, xaxt = 'n', cex = 0.5, ylim=c(0,1.8), yaxt='n')
+plot(fourgenes_df_ordered$eya, col=ifelse(fourgenes_df_ordered$eya == 0, "red", "blue"), ylab = "", xlab = "", pch=16, xaxt = 'n', cex = 0.5, ylim=c(0,1.8), yaxt='n')
+axis(1, at = c(1,  852), labels=c("0", "852"))
+title(xlab = "852 'Lawf' cells", line = 2)
 
-f <- function(x,n=10)
+axisbox <- function()
 {
-  rainbow(n, start = 0, end = 2/3)[cut(x,n)]
+  axis(2, at = c(0,  800), labels=c("0", "800"), las = 1)
+  box(lty = 1)
 }
+
+Lim1_row <- which(k20_Lawf_cluster_GBM_wGeneNames$GeneSymbol_Flybase == "Lim1")
+hth_row <- which(k20_Lawf_cluster_GBM_wGeneNames$GeneSymbol_Flybase == "hth")
+hbn_row <- which(k20_Lawf_cluster_GBM_wGeneNames$GeneSymbol_Flybase == "hbn")
+eya_row <- which(k20_Lawf_cluster_GBM_wGeneNames$GeneSymbol_Flybase == "eya")
+#par(mar = c(0,2,0,0), oma =  c(2,0,1,1), xpd = NA,  new = TRUE)
+barplot(c(length(which(k20_Lawf_cluster_GBM_wGeneNames[Lim1_row,] == 0)), length(which(k20_Lawf_cluster_GBM_wGeneNames[Lim1_row,] != 0))), 
+        col = c("red", "blue"), ylim = c(0, 900), axes = FALSE)
+axisbox()
+barplot(c(length(which(k20_Lawf_cluster_GBM_wGeneNames[hth_row,] == 0)), length(which(k20_Lawf_cluster_GBM_wGeneNames[hth_row,] != 0))), 
+        col = c("red", "blue"), ylim = c(0, 900), axes = FALSE)
+box(lty = 1)
+barplot(c(length(which(k20_Lawf_cluster_GBM_wGeneNames[hbn_row,] == 0)), length(which(k20_Lawf_cluster_GBM_wGeneNames[hbn_row,] != 0))), 
+        col = c("red", "blue"), ylim = c(0, 900), axes = FALSE)
+box(lty = 1)
+barplot(c(length(which(k20_Lawf_cluster_GBM_wGeneNames[eya_row,] == 0)), length(which(k20_Lawf_cluster_GBM_wGeneNames[eya_row,] != 0))), 
+        col = c("red", "blue"), ylim = c(0, 900), axes = FALSE)
+title(xlab = "Expression", line = 2)
+box(lty = 1)
+axis(1, at= c(0.7, 1.9), labels = c("0", ">0"), lty=0)
+
+
+
+
+
+
 
 
 
