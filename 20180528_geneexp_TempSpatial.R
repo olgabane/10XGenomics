@@ -11,6 +11,7 @@ use_genes <- get_nonzero_genes(gbm)
 gbm_bcnorm <- normalize_barcode_sums_to_median(gbm[use_genes,])
 gbm_log <- log_gene_bc_matrix(gbm_bcnorm,base=10)
 print(dim(gbm_log))
+tsne_proj <- analysis_results$tsne
 
 #Neuron vs. glia
 genes <-c("elav", "repo")
@@ -118,6 +119,11 @@ visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits 
 
 #Dscam2 and Lim1 comparison
 genes <-c("Dscam2", "Lim1")
+quartz("Dscam2", 8,5)
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
+
+#Dscam2 and Lim1 comparison
+genes <-c("so")
 quartz("Dscam2", 8,5)
 visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
