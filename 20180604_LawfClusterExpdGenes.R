@@ -73,28 +73,59 @@ for (i in 1:dim(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly)[1])
 #1. Lim1 vs. Lim1
 #2. Plot another gene manually
 
+###Check Katarina's differentially expd genes
+Lawf1_genes <- c("dpr1", "dpr2", "dpr3", "dpr6", "dpr11", "Dscam2", "Fas2", "kek1", "kirre")
+Lawf2_genes <- c("beat-IIIb", "parvin", "shakB", "DIP-beta", "dpr8", "dpr13", "dpr17", "side")
+Lawf1_gene_rows <- c()
+Lawf2_gene_rows <- c()
+for (i in 1:length(Lawf1_genes)){
+  Lawf1_gene_rows[i] <- which(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly$GeneSymbol_Flybase == paste(Lawf1_genes[i]))}
+for (i in 1:length(Lawf2_genes)){
+  Lawf2_gene_rows[i] <- which(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly$GeneSymbol_Flybase == paste(Lawf2_genes[i]))}
 
+#plot Katarina's Lawf1 genes
+setwd("/Users/Olga/Google Drive/Desplan Lab/Notebooks/Notebook 5/10X processing/20180601_LawfClustersCloserLook/Other_resulting_Plots/")
+quartz("title", 6, 10)
+layout(matrix(c(1:11), nrow = 11, byrow = TRUE))
+par(mar=c(0,4,1,1), oma = c(0, 0, 2, 0), xpd = NA)
+plot(twogenes_df_ordered$Lim1, ylab = "", xlab = "", pch=16, cex = 0.5, xaxt = "n")
+legend("topleft", "Lim1",  bty="n", text.col = 'red', text.font = 2, cex = 1.2)
+title("Genes >5X enriched in adult Lawf1 neurons", line = 1)
+for (i in 1:length(Lawf1_gene_rows))
+{
+  twogenes_df <- data.frame(as.numeric(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly[Lim1_row, 4:855]), 
+                            as.numeric(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly[Lawf1_gene_rows[i], 4:855]))
+  colnames(twogenes_df) <- c("Lim1", "gene2")
+  #reorder based on Lim1 expression 
+  twogenes_df_ordered<-twogenes_df[order(twogenes_df$Lim1),]
+  plot(twogenes_df_ordered$gene2, ylab = "", xlab = "", pch=16, cex = 0.5, xaxt = "n")
+  legend("topleft", paste(rownames(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly[Lawf1_gene_rows[i],]), "-",
+                          k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly[Lawf1_gene_rows[i],3]), bty="n", text.col = 'red', text.font = 2, cex = 1.2) 
+}
+axis(1)
+mtext("Log10(Normalized UMI)", side = 2,  srt=90, line=2, at = c(-90,5), cex = 0.7)
+quartz.save(file = "Lawf1Genes.png", type = "png", device = dev.cur()) 
+            
+#plot Katarina's Lawf2 genes
+quartz("title", 6, 10)
+layout(matrix(c(1:11), nrow = 11, byrow = TRUE))
+par(mar=c(0,4,1,1), oma = c(0, 0, 2, 0), xpd = NA)
+plot(twogenes_df_ordered$Lim1, ylab = "", xlab = "", pch=16, cex = 0.5, xaxt = "n")
+legend("topleft", "Lim1",  bty="n", text.col = 'red', text.font = 2, cex = 1.2)
+title("Genes >5X enriched in adult Lawf2 neurons", line = 1)
+for (i in 1:length(Lawf2_gene_rows))
+{
+  twogenes_df <- data.frame(as.numeric(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly[Lim1_row, 4:855]), 
+                            as.numeric(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly[Lawf2_gene_rows[i], 4:855]))
+  colnames(twogenes_df) <- c("Lim1", "gene2")
+  #reorder based on Lim1 expression 
+  twogenes_df_ordered<-twogenes_df[order(twogenes_df$Lim1),]
+  plot(twogenes_df_ordered$gene2, ylab = "", xlab = "", pch=16, cex = 0.5, xaxt = "n")
+  legend("topleft", paste(rownames(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly[Lawf2_gene_rows[i],]), "-",
+                          k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly[Lawf2_gene_rows[i],3]), bty="n", text.col = 'red', text.font = 2, cex = 1.2) 
+}
+axis(1)
+mtext("Log10(Normalized UMI)", side = 2,  srt=90, line=2, at = c(-90,5), cex = 0.7)
+quartz.save(file = "Lawf2Genes.png", type = "png", device = dev.cur()) 
 
-
-#Look at most highly exp'd
-#####Look at most variable genes across Lawfs. 
-#Is Lim1 one of them?
-#If yes, do any correlate w Lim1?
 ####Pull out expressed TF, cell adhesion molecules, etc.
-
-#IN progress, but I want to look at this quick
-#Load GBM file created 20180531 (see 20180531_GBMpulled.R)
-setwd("/Users/Olga/Google Drive/Desplan Lab/Notebooks/Notebook 5/10X processing/20180531_GBMpulled/")
-k20_Lawf_cluster_GBM_wGeneNames<-read.table("k20_Lawf_cluster_GBM_wGeneNames.txt")
-Lim1_row <- which(k20_Lawf_cluster_GBM_wGeneNames$GeneSymbol_Flybase == "Lim1")
-mbl_row <- which(k20_Lawf_cluster_GBM_wGeneNames$GeneSymbol_Flybase == "mbl")
-twogenes_df <- data.frame(as.numeric(k20_Lawf_cluster_GBM_wGeneNames[Lim1_row, 4:855]), 
-                          as.numeric(k20_Lawf_cluster_GBM_wGeneNames[mbl_row, 4:855]))
-colnames(twogenes_df) <- c("Lim1", "mbl")
-#reorder based on Lim1 expression 
-twogenes_df_ordered<-twogenes_df[order(twogenes_df$Lim1),]
-#plot
-quartz("title", 10, 10)
-layout(matrix(c(1,2), nrow = 2, byrow = TRUE))
-plot(twogenes_df_ordered$Lim1, ylab = "", xlab = "", pch=16, xaxt = 'n', cex = 0.5, axes = FALSE)
-plot(twogenes_df_ordered$mbl, ylab = "", xlab = "", pch=16, xaxt = 'n', cex = 0.5, axes = FALSE)
