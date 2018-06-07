@@ -128,4 +128,4 @@ axis(1)
 mtext("Log10(Normalized UMI)", side = 2,  srt=90, line=2, at = c(-90,5), cex = 0.7)
 quartz.save(file = "Lawf2Genes.png", type = "png", device = dev.cur()) 
 
-####Pull out expressed TF, cell adhesion molecules, etc.
+#####Pull out expressed TF, cell adhesion molecules, etc.
