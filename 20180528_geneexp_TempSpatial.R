@@ -122,8 +122,8 @@ genes <-c("Dscam2", "Lim1")
 quartz("Dscam2", 8,5)
 visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
-#Dscam2 and Lim1 comparison
-genes <-c("so")
+#mbl and Lim1 comparison
+genes <-c("mbl", "Lim1")
 quartz("Dscam2", 8,5)
 visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
