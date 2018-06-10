@@ -1,6 +1,6 @@
 #20180609_LawfClusterCloserLook_2.R
 #Continuation of 20180604_LawfClusterExpdGenes.R
-#Plots genes relative to Lim1.
+#Plots genes relative to Lim1, in single plot.
 
 #Load GBM file created 20180531 (see 20180531_GBMpulled.R)
 setwd("/Users/Olga/Google Drive/Desplan Lab/Notebooks/Notebook 5/10X processing/20180531_GBMpulled/")
@@ -29,7 +29,11 @@ k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly_sorted <-
 write.table(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly_sorted, "k20_repo_cluster_GBM_wGeneNames_ExpdGenesOnly_sorted.txt", sep = "\t")
 
 #plot 1_enriched genes
+#note: made enriched_1 and enriched_2 tables from text files (code not included). 
+#These two text files are saved to local folder at end of file to be able to re-run code
 Lim1_row <- which(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly$GeneSymbol_Flybase == "Lim1")
+
+ylimit<-range(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly[, 4:855])[2]
 
 gene2 <- c()
 for (i in 1:dim(enriched_1)[1])
@@ -37,13 +41,8 @@ for (i in 1:dim(enriched_1)[1])
 gene2[i] <- which(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly$FBN_Flybase == paste(enriched_1[i, 1]))
 }
 
-png("test.png", width = 1200, height = 400)
+png("enriched_1.png", width = 1200, height = 600)
 layout(matrix(c(1:66), nrow = 6, byrow = TRUE))
-twogenes_df_Lim1 <- data.frame(as.numeric(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly[Lim1_row, 4:855]), as.numeric(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly[Lim1_row, 4:855]))
-colnames(twogenes_df_Lim1) <- c("Lim1", "Lim1copy")
-twogenes_df_Lim1<-twogenes_df_Lim1[order(twogenes_df_Lim1$Lim1), ]
-par(mar = c (0, 0, 0, 0))
-plot(twogenes_df_Lim1$Lim1, ylab = "", xlab = "", pch=16, cex = 0.5, main = "Lim1", axes = FALSE)
 
 for (i in 1:length(gene2)) 
 {
@@ -53,11 +52,38 @@ for (i in 1:length(gene2))
   #reorder based on Lim1 expression 
   twogenes_df_ordered<-twogenes_df[order(twogenes_df$Lim1),]
   par(mar = c (0, 0, 0, 0))
-  plot(twogenes_df_ordered$gene2, ylab = "", xlab = "", pch=16, cex = 0.5, axes = FALSE)
+  plot(twogenes_df_ordered$gene2, ylab = "", xlab = "", pch=16, cex = 0.5, axes = FALSE, ylim = c(0, ylimit))
+  points(twogenes_df_Lim1$Lim1, col = "red", cex = 0.1, ylim = ylimit)
 }
 dev.off()
 
 #plot 2_enriched genes
+Lim1_row <- which(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly$GeneSymbol_Flybase == "Lim1")
 
+gene2 <- c()
+for (i in 1:dim(enriched_1)[1])
+{
+  gene2[i] <- which(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly$FBN_Flybase == paste(enriched_2[i, 1]))
+}
 
+png("enriched_2.png", width = 1200, height = 600)
+layout(matrix(c(1:66), nrow = 6, byrow = TRUE))
+
+for (i in 1:length(gene2)) 
+{
+  twogenes_df <- data.frame(as.numeric(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly[Lim1_row, 4:855]), 
+                            as.numeric(k20_Lawf_cluster_GBM_wGeneNames_ExpdGenesOnly[gene2[i], 4:855]))
+  colnames(twogenes_df) <- c("Lim1", "gene2")
+  #reorder based on Lim1 expression 
+  twogenes_df_ordered<-twogenes_df[order(twogenes_df$Lim1),]
+  par(mar = c (0, 0, 0, 0))
+  plot(twogenes_df_ordered$gene2, ylab = "", xlab = "", pch=16, cex = 0.5, axes = FALSE, ylim = c(0, ylimit))
+  points(twogenes_df_Lim1$Lim1, col = "red", cex = 0.1, ylim = ylimit)
+}
+dev.off()
+
+#save enriched_1, enriched_2
+setwd("/Users/Olga/Google Drive/Desplan Lab/Notebooks/Notebook 5/10X processing/20180609_LawfClusterCloserLook_2")
+write.table(enriched_1, "enriched_1.txt")
+write.table(enriched_2, "enriched_2.txt")
 
