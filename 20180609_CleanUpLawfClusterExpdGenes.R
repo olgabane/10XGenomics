@@ -97,3 +97,38 @@ top5304_GOTerms <- data.frame(a$V2, a$V5)
 colnames(top5304_GOTerms) <-c("FlyBaseID", "GO_Term")
 head(top5304_GOTerms)
 unique_GOTERMS<-unique(top5304_GOTerms$GO_Term)
+write.table(unique_GOTERMS, "unique_GOTERMS.txt")
+
+# load the GO library, get list of GO ID decriptions
+source("https://bioconductor.org/biocLite.R")
+biocLite("GO.db")
+library(GO.db)
+goterms <- Term(GOTERM)
+goterms <- as.data.frame(goterms)
+goterms$GO_ID <- rownames(goterms)
+rownames(goterms) <- c()
+
+selectedRows <- (goterms$GO_ID %in% unique_GOTERMS)
+goterms_subset <-goterms[selectedRows,]
+write.table(goterms_subset, "represented_goterms.txt", sep = "\t")
+
+setwd("/Users/Olga/Google Drive/Desplan Lab/Notebooks/Notebook 5/10X processing/20180609_CleanUpLawfCluterExpdGenes")
+GO_Terms_for_R<-read.csv("GO_Terms_for_R.csv")
+
+#Reduce top5304 to selected GO terms only
+M_goterms <- (top5304_GOTerms$GO_Term %in% as.vector(GO_Terms_for_R[,1]))
+top5304_GOTerms_M <-top5304_GOTerms[M_goterms,]
+AG_goterms <- (top5304_GOTerms$GO_Term %in% as.vector(GO_Terms_for_R[,2]))
+top5304_GOTerms_AG <-top5304_GOTerms[AG_goterms,]
+CA_goterms <- (top5304_GOTerms$GO_Term %in% as.vector(GO_Terms_for_R[,3]))
+top5304_GOTerms_CA <-top5304_GOTerms[CA_goterms,]
+#remove duplicate FBgn IDs
+as.vector(top5304_GOTerms_M$FlyBaseID)
+M_genes <-
+as.vector(top5304_GOTerms_AG$FlyBaseID)
+AG_genes <-
+as.vector(top5304_GOTerms_CA$FlyBaseID)
+CA_genes <- 
+
+
+
