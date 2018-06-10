@@ -123,12 +123,10 @@ top5304_GOTerms_AG <-top5304_GOTerms[AG_goterms,]
 CA_goterms <- (top5304_GOTerms$GO_Term %in% as.vector(GO_Terms_for_R[,3]))
 top5304_GOTerms_CA <-top5304_GOTerms[CA_goterms,]
 #remove duplicate FBgn IDs
-as.vector(top5304_GOTerms_M$FlyBaseID)
-M_genes <-
-as.vector(top5304_GOTerms_AG$FlyBaseID)
-AG_genes <-
-as.vector(top5304_GOTerms_CA$FlyBaseID)
-CA_genes <- 
-
-
-
+M_genes_in_Lawfs <- unique(as.vector(top5304_GOTerms_M$FlyBaseID))
+AG_genes_in_Lawfs <- unique(as.vector(top5304_GOTerms_AG$FlyBaseID))
+CA_genes_in_Lawfs <- unique(as.vector(top5304_GOTerms_CA$FlyBaseID))
+#save files
+write(M_genes_in_Lawfs, "M_genes_in_Lawfs.txt")
+write(AG_genes_in_Lawfs, "AG_genes_in_Lawfs.txt")
+write(CA_genes_in_Lawfs, "CA_genes_in_Lawfs.txt")
