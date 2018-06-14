@@ -43,7 +43,7 @@ plot_pc_variance_explained(gbm_cds, return_all = F)
 
 #Plot chosen number of clusters. (Chosen by trial and error). 
 #Seems that at this point, Monocle clusters based on tsne space, not PCA, which is unfortunate. 
-gbm_cds <- reduceDimension(gbm_cds, max_components = 2, num_dim = 6,
+gbm_cds <- reduceDimension(gbm_cds, max_components = 2, num_dim = 6,  ###could increase # dimensions here based on
                            reduction_method = 'tSNE', verbose = T)
 gbm_cds <- clusterCells(gbm_cds, num_clusters = 10)
 quartz("title", 4, 4)
@@ -67,8 +67,6 @@ quartz("title", 6, 6)
 plot_cell_clusters(gbm_cds, 1, 2, markers = c( "pros"), cell_size = 0.5)
 
 #subset CellDataSet to include clusters of interest only
-#First, need to add column to phenotypic data 
-###THIS DOESN'T WORK!! Will have to subset more manually. 
 pData(gbm_cds)$RelevantClusters <- (pData(gbm_cds)$Cluster == 1 | pData(gbm_cds)$Cluster == 4 | 
                                        pData(gbm_cds)$Cluster == 7 | pData(gbm_cds)$Cluster == 8)
 #verify that this picks out the correct cluster
@@ -80,17 +78,118 @@ gbm_cds_subset$Cluster
 #2473 cells total
 length(gbm_cds_subset$Cluster) 
 
+#Create pseudotrajectory using unsupervised method ('dpFeature') - no prior knowledge of early/late genes.
+gbm_cds_subset <- detectGenes(gbm_cds_subset, min_expr = 0.1)
+dim(pData(gbm_cds_subset)) 
+fData(gbm_cds_subset)$use_for_ordering <-
+  fData(gbm_cds_subset)$num_cells_expressed > 0.05 * ncol(gbm_cds_subset)
+quartz("title", 6, 6)
+plot_pc_variance_explained(gbm_cds_subset, return_all = F)
+gbm_cds_subset <- reduceDimension(gbm_cds_subset,
+                                  max_components = 2,
+                                  norm_method = 'log',
+                                  num_dim = 8,   #######THIS number defines how many principal components used.
+                                  reduction_method = 'tSNE',
+                                  verbose = T)
+#Cluster
+gbm_cds_subset <- clusterCells(gbm_cds_subset, verbose = F)
+#Check that clustering makes sense. 
+quartz("title", 6, 6)
+plot_cell_clusters(gbm_cds_subset, color_by = 'as.factor(Cluster)')
+quartz("markers", 6, 6)
+plot_cell_clusters(gbm_cds_subset, markers = c( "Lim1", "hbn", "hth", "eya", "elav", "repo", "ase"))
 
-length(which(gbm_cds$Cluster == 1)) 
+#plot rho, delta (go back to this)
+quartz("title", 6, 6)
+plot_rho_delta(gbm_cds_subset, rho_threshold = 2, delta_threshold = 4 ) 
+
+#get DE genes
+gbm_cds_subset_expressed_genes <- row.names(subset(fData(gbm_cds_subset),
+                                                   num_cells_expressed >= 10)) ####THIS IS A PARAMETER TO CONSIDER CHANGING
+clustering_DEG_genes <-
+  differentialGeneTest(gbm_cds_subset[gbm_cds_subset_expressed_genes,],
+                       fullModelFormulaStr = '~Cluster',
+                       cores = 1)
 
 quartz("title", 6, 6)
 plot(pData(gbm_cds)$num_genes_expressed)
 
+#plot along pseudoaxis
+gbm_cds_subset_ordering_genes <-
+  row.names(clustering_DEG_genes)[order(clustering_DEG_genes$qval)][1:1000]
 
+gbm_cds_subset <-
+  setOrderingFilter(gbm_cds_subset,
+                    ordering_genes = gbm_cds_subset_ordering_genes)
+plot_ordering_genes(gbm_cds_subset)
 
+gbm_cds_subset<-
+  reduceDimension(gbm_cds_subset, method = 'DDRTree')
 
+gbm_cds_subset <-
+  orderCells(gbm_cds_subset)
 
+#plot trajectories in several ways
+quartz("title", 6, 6)
+plot_cell_trajectory(gbm_cds_subset, color_by = "Cluster")
+quartz("title", 6, 6)
+plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime")
+quartz("title", 6, 6)
+plot_cell_trajectory(gbm_cds_subset, color_by = "State")
 
+quartz("title", 6, 6)
+plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c("Lim1", "eya", "hbn", "hth"))
+quartz("title", 6, 6)
+plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c("elav", "nSyb", "brp"))
+quartz("title", 6, 6)
+plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c("elav", "repo"))
+quartz("title", 6, 6)
+plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c("ase"))
+
+#plot genes by state
+Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
+                                      gene_short_name %in% c("Lim1", "hbn", "hth", "eya")))
+quartz("title", 6, 6)
+plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
+                  grouping = "State",
+                  min_expr = 0.1)
+
+Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
+                                      gene_short_name %in% c("elav", "repo")))
+quartz("title", 6, 6)
+plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
+                  grouping = "State",
+                  min_expr = 0.1)
+
+Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
+                                      gene_short_name %in% c("ase")))
+quartz("title", 6, 6)
+plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
+                  grouping = "State",
+                  min_expr = 0.1)
+
+#Plot genes by cluster
+
+Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
+                                      gene_short_name %in% c("Lim1", "hbn", "hth", "eya")))
+quartz("title", 6, 6)
+plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
+                  grouping = "Cluster",
+                  min_expr = 0.1)
+
+Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
+                                      gene_short_name %in% c("elav", "repo")))
+quartz("title", 6, 6)
+plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
+                  grouping = "Cluster",
+                  min_expr = 0.1)
+
+Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
+                                      gene_short_name %in% c("ase")))
+quartz("title", 6, 6)
+plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
+                  grouping = "Cluster",
+                  min_expr = 0.1)
 
 ########NEED TO LOOK AT CELLRANGER OUTPUT: 
 #Need to see what each PCA is based on. i.e if some based on cell cycle, or cell stress. (See Seurat FAQ)
