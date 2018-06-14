@@ -69,14 +69,15 @@ plot_cell_clusters(gbm_cds, 1, 2, markers = c( "pros"), cell_size = 0.5)
 #subset CellDataSet to include clusters of interest only
 #First, need to add column to phenotypic data 
 ###THIS DOESN'T WORK!! Will have to subset more manually. 
-pData(gbm_cds)$RelevantClusters <- (pData(gbm_cds)$Cluster == 1 || pData(gbm_cds)$Cluster == 5 || 
-  pData(gbm_cds)$Cluster == 7 || pData(gbm_cds)$Cluster == 8)
+pData(gbm_cds)$RelevantClusters <- (pData(gbm_cds)$Cluster == 1 | pData(gbm_cds)$Cluster == 4 | 
+                                       pData(gbm_cds)$Cluster == 7 | pData(gbm_cds)$Cluster == 8)
 #verify that this picks out the correct cluster
 quartz("title", 4, 4)
 plot_cell_clusters(gbm_cds, color_by = 'RelevantClusters')
 gbm_cds_subset <- gbm_cds[,pData(gbm_cds)$RelevantClusters]
-#verify that all values are now 1
+#verify that all values are now 1, 4, 7, or 8
 gbm_cds_subset$Cluster
+#2473 cells total
 length(gbm_cds_subset$Cluster) 
 
 
