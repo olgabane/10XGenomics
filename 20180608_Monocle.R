@@ -39,9 +39,9 @@ plot_ordering_genes(gbm_cds) #table showing genes used to cluster
 
 quartz("title", 4, 4)
 plot_pc_variance_explained(gbm_cds, return_all = F) 
-  #Plot 10 clusters. Note: I chose 10 by trial and error (captures L cluster well)
+#Plot 10 clusters. Note: I chose 10 by trial and error (captures L cluster well)
 gbm_cds <- reduceDimension(gbm_cds, max_components = 2, num_dim = 6,
-                        reduction_method = 'tSNE', verbose = T)
+                           reduction_method = 'tSNE', verbose = T)
 gbm_cds <- clusterCells(gbm_cds, num_clusters = 10)
 quartz("title", 4, 4)
 plot_cell_clusters(gbm_cds, 1, 2, color = "Cluster")
@@ -74,11 +74,11 @@ fData(gbm_cds_subset)$use_for_ordering <-
 quartz("title", 6, 6)
 plot_pc_variance_explained(gbm_cds_subset, return_all = F)
 gbm_cds_subset <- reduceDimension(gbm_cds_subset,
-                            max_components = 2,
-                            norm_method = 'log',
-                            num_dim = 3,
-                            reduction_method = 'tSNE',
-                            verbose = T)
+                                  max_components = 2,
+                                  norm_method = 'log',
+                                  num_dim = 3,
+                                  reduction_method = 'tSNE',
+                                  verbose = T)
 gbm_cds_subset <- clusterCells(gbm_cds_subset, verbose = F)
 quartz("title", 6, 6)
 plot_cell_clusters(gbm_cds_subset, color_by = 'as.factor(Cluster)')
@@ -86,14 +86,14 @@ quartz("title", 6, 6)
 plot_cell_clusters(gbm_cds_subset, markers = c( "Lim1", "hbn", "hth", "eya"))
 quartz("title", 6, 6)
 plot_cell_clusters(gbm_cds_subset, markers = c( "elav"))
-  #"Can also provide the decision plot for users to check the Ρ, Δ for each cell and decide the threshold for defining the cell clusters".
-  #keep this in mind, but it's not something I did this first time
+#"Can also provide the decision plot for users to check the Ρ, Δ for each cell and decide the threshold for defining the cell clusters".
+#keep this in mind, but it's not something I did this first time
 quartz("title", 6, 6)
 plot_rho_delta(gbm_cds_subset, rho_threshold = 2, delta_threshold = 4 ) ###may need to change these parameters
 
 #get DE genes
 gbm_cds_subset_expressed_genes <- row.names(subset(fData(gbm_cds_subset),
-                                          num_cells_expressed >= 10))
+                                                   num_cells_expressed >= 10))
 clustering_DEG_genes <-
   differentialGeneTest(gbm_cds_subset[gbm_cds_subset_expressed_genes,],
                        fullModelFormulaStr = '~Cluster',
@@ -133,7 +133,7 @@ plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c("elav"
 State_Barcode_df <- data.frame(pData(gbm_cds_subset)$barcode, pData(gbm_cds_subset)$State)
 
 Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
-                                gene_short_name %in% c("Lim1", "hbn", "hth", "eya")))
+                                      gene_short_name %in% c("Lim1", "hbn", "hth", "eya")))
 quartz("title", 6, 6)
 plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
                   grouping = "Cluster",
@@ -162,11 +162,3 @@ plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
 
 quartz("title", 6, 6)
 plot_cell_clusters(gbm_cds, 1, 2, color = "Cluster", markers = "Lim1")
-
-
-
-
-
-
-
-                  min_expr = 0.1)
