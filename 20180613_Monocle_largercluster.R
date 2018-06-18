@@ -129,7 +129,7 @@ gbm_cds_subset<-
 gbm_cds_subset <-
   orderCells(gbm_cds_subset)
 
-#plot trajectories in several ways
+#plot trajectories by Cluster, Pseudotime, State
 quartz("title", 6, 6)
 plot_cell_trajectory(gbm_cds_subset, color_by = "Cluster")
 quartz("title", 6, 6)
@@ -137,6 +137,7 @@ plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime")
 quartz("title", 6, 6)
 plot_cell_trajectory(gbm_cds_subset, color_by = "State")
 
+#plot trajectories with markers of interest.
 quartz("title", 6, 6)
 plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c("Lim1", "eya", "hbn", "hth"))
 quartz("title", 6, 6)
@@ -146,50 +147,49 @@ plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c("elav"
 quartz("title", 6, 6)
 plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c("ase"))
 
-#plot genes by state
-Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
-                                      gene_short_name %in% c("Lim1", "hbn", "hth", "eya")))
-quartz("title", 6, 6)
-plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
-                  grouping = "State",
-                  min_expr = 0.1)
+#plot gene expression by cluster or state
+#I think min_expr = 0.1 represent UMI of 0. They must be using non-logged expression here. 
+GeneByCluster<-function(x){
+  quartz("title", 6, 6)
+  plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
+                    grouping = "Cluster",
+                    min_expr = 0.1)
+}
 
-Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
-                                      gene_short_name %in% c("elav", "repo")))
-quartz("title", 6, 6)
-plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
-                  grouping = "State",
-                  min_expr = 0.1)
-
-Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
-                                      gene_short_name %in% c("ase")))
-quartz("title", 6, 6)
-plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
-                  grouping = "State",
-                  min_expr = 0.1)
-
-#Plot genes by cluster
+GeneByState<-function(x){
+  quartz("title", 6, 6)
+  plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
+                    grouping = "State",
+                    min_expr = 0.1)
+}
 
 Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
                                       gene_short_name %in% c("Lim1", "hbn", "hth", "eya")))
-quartz("title", 6, 6)
-plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
-                  grouping = "Cluster",
-                  min_expr = 0.1)
+GeneByCluster()
+GeneByState()
+
+Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
+                                      gene_short_name %in% c("elav", "nSyb", "brp")))
+GeneByCluster()
+GeneByState()
 
 Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
                                       gene_short_name %in% c("elav", "repo")))
-quartz("title", 6, 6)
-plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
-                  grouping = "Cluster",
-                  min_expr = 0.1)
+
+GeneByCluster()
+GeneByState()
 
 Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
                                       gene_short_name %in% c("ase")))
-quartz("title", 6, 6)
-plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
-                  grouping = "Cluster",
-                  min_expr = 0.1)
+
+GeneByCluster()
+GeneByState()
+
+
+
+
+
+
 
 ########NEED TO LOOK AT CELLRANGER OUTPUT: 
 #Need to see what each PCA is based on. i.e if some based on cell cycle, or cell stress. (See Seurat FAQ)
