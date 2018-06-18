@@ -1,7 +1,7 @@
 #20180613_Monocle_largercluster.R
 #Monocle - arrange cells in pseudotime
 #Use progenitor, neuron, repo+ clusters this time
-#June 13, 2018
+#June 13, 2018, continued June 18
 
 #Load monocle
 library(monocle)
@@ -148,7 +148,8 @@ quartz("title", 6, 6)
 plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c("ase"))
 
 #plot gene expression by cluster or state
-#I think min_expr = 0.1 represent UMI of 0. They must be using non-logged expression here. 
+#I think min_expr = 0.1 represent UMI of 0. 
+#They must be using non-logged expression here, and 0.1 was added to al UMI values in the analysis. 
 GeneByCluster<-function(x){
   quartz("title", 6, 6)
   plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
@@ -185,12 +186,19 @@ Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
 GeneByCluster()
 GeneByState()
 
+#Plot trajectory with gene expression
+quartz("title", 6, 6)
+plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c("Lim1", "eya", "hbn", "hth"))
+quartz("title", 6, 6)
+plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c("repo", "elav"))
+
+#Save CellDataSet(subsetted and not). Verified that this is sufficient to re-plot trajectory.
+setwd("/Users/Olga/Google Drive/Desplan Lab/Notebooks/Notebook 5/10X processing/20180618_Monocle/")
+saveRDS(gbm_cds_subset, file = "gbm_cds_subset_1.RData")
+saveRDS(gbm_cds, file = "gbm_cds_1.RData")
+#Load CellDataSet (just as example here, don't run). 
+a<-readRDS(file = "gbm_cds_subset_1.RData")
 
 
 
 
-
-
-########NEED TO LOOK AT CELLRANGER OUTPUT: 
-#Need to see what each PCA is based on. i.e if some based on cell cycle, or cell stress. (See Seurat FAQ)
-#-DO this in Seurat instead? Seurat provides function to do this. 
