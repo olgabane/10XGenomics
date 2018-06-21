@@ -77,26 +77,33 @@ for(i in 3:6)
 }
 
 #Plots trajectories for PCs 3-6
-#Functions tobe used in loop below
+#Functions to be used in loop below
 GeneByCluster<-function(fname, ...){
   png(file=fname)
   arguments<-list(...)
-  Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
-                                        gene_short_name %in% c(arguments)))
-  print(plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
-                          grouping = "Cluster",
-                          min_expr = 0.1))
+  Genes_of_interest <- row.names(subset(fData(gbm_cds_subset), gene_short_name %in% c(arguments)))
+  print(plot_genes_jitter(gbm_cds_subset[Genes_of_interest,], grouping = "Cluster", min_expr = 0.1))
   dev.off()
 }
 
 GeneByState<-function(fname, ...){
   png(file=fname)
   arguments<-list(...)
-  Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
-                                        gene_short_name %in% c(arguments)))
-  print(plot_genes_jitter(gbm_cds_subset[Genes_of_interest,],
-                    grouping = "State",
-                    min_expr = 0.1))
+  Genes_of_interest <- row.names(subset(fData(gbm_cds_subset), gene_short_name %in% c(arguments)))
+  print(plot_genes_jitter(gbm_cds_subset[Genes_of_interest,], grouping = "State", min_expr = 0.1))
+  dev.off()
+}
+
+PlotMarkersOverTraj <- function(fname, ...){
+  png(file=fname)
+  arguments <- list(...)
+  print(plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c(arguments)))
+  dev.off()
+}
+
+PlotTrajectory <- function(fname, how){
+  png(file=fname)
+  print(plot_cell_trajectory(gbm_cds_subset, color_by = how))
   dev.off()
 }
 
@@ -121,57 +128,26 @@ for(i in 3:6){
     print(plot_rho_delta(gbm_cds_subset, rho_threshold = 2, delta_threshold = 4)) 
     dev.off()
     #plot trajectories along pseudoaxis by Cluster, Pseudotime, State
-    png(file=paste0("Traj_by_cluster_PC_", i, ".png"))
-    print(plot_cell_trajectory(gbm_cds_subset, color_by = "Cluster"))
-    dev.off()
-    png(file=paste0("Traj_by_pseudotime_PC_", i, ".png"))
-    print(plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime"))
-    dev.off()
-    png(file=paste0("Traj_by_state_PC_", i, ".png"))
-    print(plot_cell_trajectory(gbm_cds_subset, color_by = "State"))
-    dev.off()
+    PlotTrajectory(paste0("Traj_by_cluster_PC_", i, ".png"), "Cluster")
+    PlotTrajectory(paste0("Traj_by_pseudotime_PC_", i, ".png"), "Pseudotime")
+    PlotTrajectory(paste0("Traj_by_state_PC_", i, ".png"), "State")
+
     #plot trajectories with markers of interest.
-    png(file=paste0("Traj_by_markers_lim1eyahbnhth_PC_", i, ".png"))
-    print(plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c("Lim1", "eya", "hbn", "hth")))
-    dev.off()
-    png(file=paste0("Traj_by_markers_elavnSybbrp_PC_", i, ".png"))
-    print(plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c("elav", "nSyb", "brp")))
-    dev.off()
-    png(file=paste0("Traj_by_markers_elavrepo_PC_", i, ".png"))
-    print(plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c("elav", "repo")))
-    dev.off()
-    png(file=paste0("Traj_by_markers_ase_PC_", i, ".png"))
-    print(plot_cell_trajectory(gbm_cds_subset, color_by = "Pseudotime", markers = c("ase")))
-    dev.off()
+    PlotMarkersOverTraj(paste0("Traj_by_markers_lim1eyahbnhth_PC_", i, ".png"), "Lim1", "eya", "hbn", "hth")
+    PlotMarkersOverTraj(paste0("Traj_by_markers_elavnSybbrp_PC_", i, ".png"), "elav", "nSyb", "brp")
+    PlotMarkersOverTraj(paste0("Traj_by_markers_elavrepo_PC_", i, ".png"), "elav", "repo")
+    PlotMarkersOverTraj(paste0("Traj_by_markers_ase_PC_", i, ".png"), "ase")
+    
     #plot genes of interest by cluster, state
-    Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
-                                          gene_short_name %in% c("Lim1", "hbn", "hth", "eya")))
     GeneByCluster(paste0("GenebyCluster_LHHE_", i, ".png"), "Lim1", "hbn", "hth", "eya")
-    GeneByState(paste0("GenebyState_LHHE_", i, ".png"))
-    
-    Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
-                                          gene_short_name %in% c("elav", "nSyb", "brp")))
-    GeneByCluster(paste0("GenebyCluster_ENB_", i, ".png"))
-    GeneByState(paste0("GenebyState_ENB_", i, ".png"))
-    
-    Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
-                                          gene_short_name %in% c("elav", "repo")))
-    GeneByCluster(paste0("GenebyCluster_ER_", i, ".png"))
-    GeneByState(paste0("GenebyState_ER_", i, ".png"))
-    
-    Genes_of_interest <- row.names(subset(fData(gbm_cds_subset),
-                                          gene_short_name %in% c("ase")))
-    GeneByCluster(paste0("GenebyCluster_A_", i, ".png"))
-    GeneByState(paste0("GenebyState_A_", i, ".png"))
+    GeneByState(paste0("GenebyState_LHHE_", i, ".png"), "Lim1", "hbn", "hth", "eya")
+    GeneByCluster(paste0("GenebyCluster_ENB_", i, ".png"), "elav", "nSyb", "brp")
+    GeneByState(paste0("GenebyState_ENB_", i, ".png"), "elav", "nSyb", "brp")
+    GeneByCluster(paste0("GenebyCluster_ER_", i, ".png"), "elav", "repo")
+    GeneByState(paste0("GenebyState_ER_", i, ".png"), "elav", "repo")
+    GeneByCluster(paste0("GenebyCluster_A_", i, ".png"), "ase")
+    GeneByState(paste0("GenebyState_A_", i, ".png"), "ase")
 }
-
-
-
-
-
-
-#encapsulated repetitive __ in funtions to streamline code
-
 
 
 
