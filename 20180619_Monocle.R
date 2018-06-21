@@ -56,19 +56,14 @@ for(i in 3:6)
                            cores = 1)
     
     #order genes
-    gbm_cds_subset_ordering_genes <-
-      row.names(clustering_DEG_genes)[order(clustering_DEG_genes$qval)][1:1000]
+    gbm_cds_subset_ordering_genes <- row.names(clustering_DEG_genes)[order(clustering_DEG_genes$qval)][1:1000]
     
-    gbm_cds_subset <-
-      setOrderingFilter(gbm_cds_subset,
-                        ordering_genes = gbm_cds_subset_ordering_genes)
+    gbm_cds_subset <- setOrderingFilter(gbm_cds_subset, ordering_genes = gbm_cds_subset_ordering_genes)
     plot_ordering_genes(gbm_cds_subset)
     
-    gbm_cds_subset<-
-      reduceDimension(gbm_cds_subset, method = 'DDRTree')
+    gbm_cds_subset<- reduceDimension(gbm_cds_subset, method = 'DDRTree')
     
-    gbm_cds_subset <-
-      orderCells(gbm_cds_subset)
+    gbm_cds_subset <- orderCells(gbm_cds_subset)
     
     #Save CellDataSet
     setwd("/Users/Olga/Google Drive/Desplan Lab/Notebooks/Notebook 5/10X processing/20180619_Monocle/")
@@ -148,6 +143,5 @@ for(i in 3:6){
     GeneByCluster(paste0("GenebyCluster_A_", i, ".png"), "ase")
     GeneByState(paste0("GenebyState_A_", i, ".png"), "ase")
 }
-
 
 
