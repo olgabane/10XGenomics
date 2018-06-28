@@ -36,7 +36,13 @@ df_ChangedGenesOverPseudotime[Down, 11] <- "Down"
 df_ChangedGenesOverPseudotime[Up_Down, 11] <- "Up_Down"
 colnames(df_ChangedGenesOverPseudotime)[11] <- "Trajectory"
 
-#Identify TFs among changed genes
-
-
-
+#Identify TFs, chromatin related protein, and transcriptional machinery components among changed genes
+#Rheet et al., 2015, Cell Reports, TableS1: 
+#"We surveyed the literature and gathered a list of 996 genes, containing TFs with characterized binding domains, 
+#computationally predicted (putative) TFs, chromatin-related proteins and transcriptional machinery components"
+TFList <- read.csv("Rhee2015_TableS1.csv")
+TFList[, 3:7] <- NULL
+match<-match(df_ChangedGenesOverPseudotime$Submitted_ID, TFList$Flybase.ID )
+match[is.na(match)] <- 0
+match[which(match > 0)] <- 1
+df_ChangedGenesOverPseudotime$TF_Rhee2015 <- match
