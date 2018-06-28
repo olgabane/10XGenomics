@@ -42,7 +42,45 @@ colnames(df_ChangedGenesOverPseudotime)[11] <- "Trajectory"
 #computationally predicted (putative) TFs, chromatin-related proteins and transcriptional machinery components"
 TFList <- read.csv("Rhee2015_TableS1.csv")
 TFList[, 3:7] <- NULL
-match<-match(df_ChangedGenesOverPseudotime$Submitted_ID, TFList$Flybase.ID )
+match<-match(df_ChangedGenesOverPseudotime$Submitted_ID, TFList$Flybase.ID)
 match[is.na(match)] <- 0
 match[which(match > 0)] <- 1
 df_ChangedGenesOverPseudotime$TF_Rhee2015 <- match
+
+#Add automated gene summaries from flybase to resulting changed genes
+GeneSummaries_FB <- read.csv("automated_gene_summaries.tsv", sep = "\t", header = FALSE)
+colnames(GeneSummaries_FB) <- c("Flybase_ID", "Gene_summary")
+match_FBID<-match(GeneSummaries_FB$Flybase_ID, df_ChangedGenesOverPseudotime$Submitted_ID, nomatch = 0)
+match_FBID[which(match_FBID > 0)] <- 1
+GeneSummaries_FB_subset <- GeneSummaries_FB[which(match_FBID == 1),]
+#re-order, clean up to be able to add to df_ChangedGenesOverPseudotime
+for (i in 1:13){
+GeneSummaries_FB_subset[nrow(GeneSummaries_FB_subset)+1,] <- NA
+i= i+1
+}
+GeneSummaries_FB_subset$IDs_in_f_ChangedGenesOverPseudotime <- df_ChangedGenesOverPseudotime$Submitted_ID
+a<-match(GeneSummaries_FB_subset$IDs_in_f_ChangedGenesOverPseudotime, GeneSummaries_FB_subset$Flybase_ID)
+nomatch<-which(is.na(a))
+rownames(GeneSummaries_FB_subset) <- 1:nrow(GeneSummaries_FB_subset)
+#clean up: insert column for each ID that has no corresponding summary in GeneSummaries_FB
+df1 <- GeneSummaries_FB_subset[1:nomatch[1]-1,]
+df1[nrow(df1)+1, ] <- NA
+
+for(i in 2:length(nomatch)){
+assign(paste("df", i, sep = ""), GeneSummaries_FB_subset[nomatch[i-1]:nomatch[i]-1,])
+name <- print(get(paste("df", i, sep="")))
+name[nrow(name)+1, ] <- NA ###this part does not work
+}
+
+df14 <- GeneSummaries_FB_subset[nomatch[13]:dim(GeneSummaries_FB_subset)[1],]
+df14[nrow(df14)+1, ] <- NA
+
+GeneSummaries_FB_clean <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10, df11, df12, df13, df14)
+
+#re-append ID's from df_ChangedGenesOverPseudotime to verify that summaries are matched correctly
+GeneSummaries_FB_clean$IDs_in_f_ChangedGenesOverPseudotime <- df_ChangedGenesOverPseudotime$Submitted_ID
+
+
+
+#Save resulting df
+write.csv(df_ChangedGenesOverPseudotime, "AllGenesOverPseudotime_ProcessedJune28.csv")
