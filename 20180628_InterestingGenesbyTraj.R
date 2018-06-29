@@ -59,25 +59,33 @@ GeneSummaries_FB_subset[nrow(GeneSummaries_FB_subset)+1,] <- NA
 i= i+1
 }
 GeneSummaries_FB_subset$IDs_in_f_ChangedGenesOverPseudotime <- df_ChangedGenesOverPseudotime$Submitted_ID
+rownames(GeneSummaries_FB_subset) <- 1:nrow(GeneSummaries_FB_subset)
 a<-match(GeneSummaries_FB_subset$IDs_in_f_ChangedGenesOverPseudotime, GeneSummaries_FB_subset$Flybase_ID)
 nomatch<-which(is.na(a))
-rownames(GeneSummaries_FB_subset) <- 1:nrow(GeneSummaries_FB_subset)
+
 #clean up: insert column for each ID that has no corresponding summary in GeneSummaries_FB
-df1 <- GeneSummaries_FB_subset[1:nomatch[1]-1,]
+df1 <- GeneSummaries_FB_subset[1:(nomatch[1]-1),]
 df1[nrow(df1)+1, ] <- NA
 
 for(i in 2:length(nomatch)){
-assign(paste("df", i, sep = ""), GeneSummaries_FB_subset[nomatch[i-1]:nomatch[i]-1,])
-name <- print(get(paste("df", i, sep="")))
-name[nrow(name)+1, ] <- NA ###this part does not work
+assign(paste("df", i, sep = ""), GeneSummaries_FB_subset[(nomatch[i-1]):(nomatch[i]-1),])
 }
 
-df14 <- GeneSummaries_FB_subset[nomatch[13]:dim(GeneSummaries_FB_subset)[1],]
-df14[nrow(df14)+1, ] <- NA
+dfList <- list(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10, df11, df12, df13)
+
+for(i in 2:length(nomatch)){
+dfList[[i]][nrow(dfList[[i]])+1, ] <- NA
+assign(paste("df", i, sep = ""), dfList[[i]])
+}
+
+df14 <- GeneSummaries_FB_subset[(nomatch[13]):(dim(GeneSummaries_FB_subset)[1]),]
 
 GeneSummaries_FB_clean <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10, df11, df12, df13, df14)
 
-#re-append ID's from df_ChangedGenesOverPseudotime to verify that summaries are matched correctly
+rownames(GeneSummaries_FB_clean) <- 1:nrow(GeneSummaries_FB_clean)
+GeneSummaries_FB_clean<- GeneSummaries_FB_clean[-(1577:1589), ]
+
+ #re-append ID's from df_ChangedGenesOverPseudotime to verify that summaries are matched correctly
 GeneSummaries_FB_clean$IDs_in_f_ChangedGenesOverPseudotime <- df_ChangedGenesOverPseudotime$Submitted_ID
 
 
