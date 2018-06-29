@@ -68,7 +68,7 @@ df1 <- GeneSummaries_FB_subset[1:(nomatch[1]-1),]
 df1[nrow(df1)+1, ] <- NA
 
 for(i in 2:length(nomatch)){
-assign(paste("df", i, sep = ""), GeneSummaries_FB_subset[(nomatch[i-1]):(nomatch[i]-1),])
+assign(paste("df", i, sep = ""), GeneSummaries_FB_subset[(nomatch[i-1] - (i-2)):(nomatch[i]-1-(i-1)),])
 }
 
 dfList <- list(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10, df11, df12, df13)
@@ -78,17 +78,18 @@ dfList[[i]][nrow(dfList[[i]])+1, ] <- NA
 assign(paste("df", i, sep = ""), dfList[[i]])
 }
 
-df14 <- GeneSummaries_FB_subset[(nomatch[13]):(dim(GeneSummaries_FB_subset)[1]),]
+df14 <- GeneSummaries_FB_subset[(nomatch[13]-(12)):(dim(GeneSummaries_FB_subset)[1]),]
 
 GeneSummaries_FB_clean <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10, df11, df12, df13, df14)
 
 rownames(GeneSummaries_FB_clean) <- 1:nrow(GeneSummaries_FB_clean)
 GeneSummaries_FB_clean<- GeneSummaries_FB_clean[-(1577:1589), ]
 
- #re-append ID's from df_ChangedGenesOverPseudotime to verify that summaries are matched correctly
+#re-append ID's from df_ChangedGenesOverPseudotime to verify that summaries are matched correctly
 GeneSummaries_FB_clean$IDs_in_f_ChangedGenesOverPseudotime <- df_ChangedGenesOverPseudotime$Submitted_ID
 
-
+#once verified, append gene summaries to df_ChangedGenesOverPseudotime
+df_ChangedGenesOverPseudotime$Gene_summary <- GeneSummaries_FB_clean$Gene_summary
 
 #Save resulting df
-write.csv(df_ChangedGenesOverPseudotime, "AllGenesOverPseudotime_ProcessedJune28.csv")
+write.csv(df_ChangedGenesOverPseudotime, "AllGenesOverPseudotime_ProcessedJune29.csv")
