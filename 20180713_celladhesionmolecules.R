@@ -1,3 +1,4 @@
+#20180713_celladhesionmolecules.R
 #Identify most highly expressed cell adhesion molecules
 #July 13, 2018
 
@@ -43,3 +44,12 @@ CellAdinLawfs$Trajectory[i]  = as.character(PseudotimeDF_CellAd$Trajectory[a[i]]
 #Label all cell adhesion molecules that don't change as "No_change"
 CellAdinLawfs[which(is.na(CellAdinLawfs$Trajectory)), 5] <- "No_Change"
 
+#Insert column with gene expression per cell
+temp <- CellAdinLawfs[, 1:4]
+temp$ExprPerCell = c(CellAdinLawfs$RowSum/852)
+temp2 <- CellAdinLawfs[, 5]
+CellAdinLawfs <- cbind(temp, temp2)
+
+#Save resulting data frame
+setwd("../../../20180713_celladhesion/")
+write.csv(CellAdinLawfs, "CellAdhesioninLawfs.csv")
