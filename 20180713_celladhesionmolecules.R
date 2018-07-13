@@ -32,4 +32,14 @@ PseudotimeDF <- read.csv("AllGenesOverPseudotime_ProcessedJune29.csv")
 #ONLY genes that change over pseudotime trajectory (up or down) are included in PseudotimeDF
 rows_P <- which(match(PseudotimeDF$Submitted, CellAd$V1) > 0)
 PseudotimeDF_CellAd<-PseudotimeDF[rows_P, ]
+rownames(PseudotimeDF_CellAd) <- seq(1:dim(PseudotimeDF_CellAd)[1])
+#Get rows in CellAdinLawfs corresponding to cell adhesion molecules that change over time 
+rows_PC<-which(match(CellAdinLawfs$FBN_Flybase, PseudotimeDF_CellAd$Submitted_ID) > 0)
+#Label all cell adhesion molecules with change in expression over pseudotrajectory
+CellAdinLawfs$Trajectory <- NA
+a<-match(CellAdinLawfs$FBN_Flybase, PseudotimeDF_CellAd$Submitted_ID)
+for (i in 1:length(a))
+CellAdinLawfs$Trajectory[i]  = as.character(PseudotimeDF_CellAd$Trajectory[a[i]])
+#Label all cell adhesion molecules that don't change as "No_change"
+CellAdinLawfs[which(is.na(CellAdinLawfs$Trajectory)), 5] <- "No_Change"
 
