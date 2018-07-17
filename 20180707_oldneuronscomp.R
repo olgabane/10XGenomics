@@ -36,8 +36,6 @@ GBM_oldneurons <- GBM_all[,old_neuron_positions]
 #Convert matrix to dataframe (will add colummns)
 GBM_oldneurons <-as.data.frame(GBM_oldneurons)
 
-### Order by Lim1, plot all genes (as before, but this time for old neurons only)
-#Some code re-used from 20180604_LawfClusterExpdGenes.R
 #Delete genes that are not expressed in any of the 496 cells
 #sum across rows
 sum<-c()
@@ -61,7 +59,25 @@ Lim1_pos_col<-which(GBM_oldneurons_ExpdGenesOnly[Lim1_row,] != 0)
 Lim1_pos_col<-Lim1_pos_col[1:292]
 GBM_oldneurons_ExpdGenesOnly_Lim1_neg <- GBM_oldneurons_ExpdGenesOnly[,Lim1_neg_col]
 GBM_oldneurons_ExpdGenesOnly_Lim1_pos <- GBM_oldneurons_ExpdGenesOnly[,Lim1_pos_col]
-#Sum across rows for expression, divide by number of cells
 
-AvgExprsPerCell<-
+#Add column with expression per cell across row
+sum<-c()
+for (i in 1:dim(GBM_oldneurons_ExpdGenesOnly_Lim1_neg)[1])
+  sum[i] <- sum(GBM_oldneurons_ExpdGenesOnly_Lim1_neg[i,])
+GBM_oldneurons_ExpdGenesOnly_Lim1_neg$AvgExprsPerCell <- sum/(dim(GBM_oldneurons_ExpdGenesOnly_Lim1_neg)[2])
+
+sum<-c()
+for (i in 1:dim(GBM_oldneurons_ExpdGenesOnly_Lim1_pos)[1])
+  sum[i] <- sum(GBM_oldneurons_ExpdGenesOnly_Lim1_pos[i,])
+GBM_oldneurons_ExpdGenesOnly_Lim1_pos$AvgExprsPerCell <- sum/(dim(GBM_oldneurons_ExpdGenesOnly_Lim1_pos)[2])
+
+###Identify genes differentially expressed among the two groups of old neurons
+relative_expression <- data.frame(GBM_oldneurons_ExpdGenesOnly_Lim1_pos$AvgExprsPerCell, GBM_oldneurons_ExpdGenesOnly_Lim1_neg$AvgExprsPerCell)
+rownames(relative_expression) <- rownames(GBM_oldneurons_ExpdGenesOnly_Lim1_pos)
+colnames(relative_expression) <- c("AvgExprsPerCell_Lim1_pos", "AvgExprsPerCell_Lim1_neg")
+relative_expression$pos_div_neg <-relative_expression[,1]/relative_expression[,2]
+#Sort by relative expression
+relative_expression_sorted <- relative_expression[order(relative_expression$pos_div_neg),]
+#Add columnn characterizing relative expression
+_LessThan5xDIFF <- which(relative_expression_sorted$pos_div_neg > 0.2 & relative_expression_sorted$pos_div_neg < 5)
 
