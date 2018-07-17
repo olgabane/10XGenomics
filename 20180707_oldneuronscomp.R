@@ -33,5 +33,35 @@ GBM_all <- as.matrix(GBM_all)
 PseudostateDF_OldNeurons_Barcodes <- PseudostateDF_OldNeurons$barcode
 old_neuron_positions<-match(PseudostateDF_OldNeurons_Barcodes, colnames(GBM_all))
 GBM_oldneurons <- GBM_all[,old_neuron_positions]
+#Convert matrix to dataframe (will add colummns)
+GBM_oldneurons <-as.data.frame(GBM_oldneurons)
 
+### Order by Lim1, plot all genes (as before, but this time for old neurons only)
+#Some code re-used from 20180604_LawfClusterExpdGenes.R
+#Delete genes that are not expressed in any of the 496 cells
+#sum across rows
+sum<-c()
+for (i in 1:dim(GBM_oldneurons)[1])
+  sum[i] <- sum(GBM_oldneurons[i,])
+#add sums in column to dataframe
+GBM_oldneurons$RowSum <- sum
+length(which(GBM_oldneurons$RowSum == 0)) #3707 genes eliminated (not expressed in any old neurons)
+#delete all rows for which RowSum == 0. 
+zerorows<-which(GBM_oldneurons$RowSum == 0)
+GBM_oldneurons_ExpdGenesOnly <- GBM_oldneurons[-zerorows,]
+dim(GBM_oldneurons_ExpdGenesOnly)
+#Save file (re-load in R, not excel to preserve all data)
+setwd("/Users/Olga/Google Drive/Desplan Lab/Notebooks/Notebook 5/10X processing/20180706_oldneuronscompare/")
+write.table(GBM_oldneurons_ExpdGenesOnly, "GBM_oldneurons_ExpdGenesOnly.txt", sep = "\t")
+
+#Subset dataframe for Lim1+, Lim1- old neurons
+Lim1_row <- which(rownames(GBM_oldneurons_ExpdGenesOnly) == "FBgn0026411")
+Lim1_neg_col<-which(GBM_oldneurons_ExpdGenesOnly[Lim1_row,] == 0)
+Lim1_pos_col<-which(GBM_oldneurons_ExpdGenesOnly[Lim1_row,] != 0)
+Lim1_pos_col<-Lim1_pos_col[1:292]
+GBM_oldneurons_ExpdGenesOnly_Lim1_neg <- GBM_oldneurons_ExpdGenesOnly[,Lim1_neg_col]
+GBM_oldneurons_ExpdGenesOnly_Lim1_pos <- GBM_oldneurons_ExpdGenesOnly[,Lim1_pos_col]
+#Sum across rows for expression, divide by number of cells
+
+AvgExprsPerCell<-
 
