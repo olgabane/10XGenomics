@@ -79,5 +79,14 @@ relative_expression$pos_div_neg <-relative_expression[,1]/relative_expression[,2
 #Sort by relative expression
 relative_expression_sorted <- relative_expression[order(relative_expression$pos_div_neg),]
 #Add columnn characterizing relative expression
-_LessThan5xDIFF <- which(relative_expression_sorted$pos_div_neg > 0.2 & relative_expression_sorted$pos_div_neg < 5)
-
+LessThan5xDIFF <- which(relative_expression_sorted$pos_div_neg > 0.2 & relative_expression_sorted$pos_div_neg < 5)
+Zero <- which(relative_expression_sorted$pos_div_neg == 0)
+Infinity <- which(relative_expression_sorted$pos_div_neg == Inf)
+Pos_5X <- which(relative_expression_sorted$pos_div_neg >= 5)
+Neg_5X <- which(relative_expression_sorted$pos_div_neg > 0 & relative_expression_sorted$pos_div_neg <= 0.2)
+relative_expression_sorted$Description <- NA
+relative_expression_sorted[LessThan5xDIFF,4] <- "Less than 5x diff"
+relative_expression_sorted[Zero,4] <- "Zero in Lim1+"
+relative_expression_sorted[Infinity,4] <- "Zero in Lim1-"
+relative_expression_sorted[Pos_5X,4] <- "5X in Lim1+"
+relative_expression_sorted[Neg_5X,4] <- "5X in Lim1-"
