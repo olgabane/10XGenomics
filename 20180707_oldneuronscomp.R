@@ -71,10 +71,17 @@ for (i in 1:dim(GBM_oldneurons_ExpdGenesOnly_Lim1_pos)[1])
   sum[i] <- sum(GBM_oldneurons_ExpdGenesOnly_Lim1_pos[i,])
 GBM_oldneurons_ExpdGenesOnly_Lim1_pos$AvgExprsPerCell <- sum/(dim(GBM_oldneurons_ExpdGenesOnly_Lim1_pos)[2])
 
+#Count in how many cells factor is expressed
+GBM_oldneurons_ExpdGenesOnly_Lim1_pos$CellsExpd <- rowSums(GBM_oldneurons_ExpdGenesOnly_Lim1_pos != 0)
+GBM_oldneurons_ExpdGenesOnly_Lim1_neg$CellsExpd <- rowSums(GBM_oldneurons_ExpdGenesOnly_Lim1_neg != 0)
+
 ###Identify genes differentially expressed among the two groups of old neurons
-relative_expression <- data.frame(GBM_oldneurons_ExpdGenesOnly_Lim1_pos$AvgExprsPerCell, GBM_oldneurons_ExpdGenesOnly_Lim1_neg$AvgExprsPerCell)
+relative_expression <- data.frame(GBM_oldneurons_ExpdGenesOnly_Lim1_pos$AvgExprsPerCell, 
+                                  GBM_oldneurons_ExpdGenesOnly_Lim1_neg$AvgExprsPerCell, 
+                                  GBM_oldneurons_ExpdGenesOnly_Lim1_pos$CellsExpd,
+                                  GBM_oldneurons_ExpdGenesOnly_Lim1_neg$CellsExpd)
 rownames(relative_expression) <- rownames(GBM_oldneurons_ExpdGenesOnly_Lim1_pos)
-colnames(relative_expression) <- c("AvgExprsPerCell_Lim1_pos", "AvgExprsPerCell_Lim1_neg")
+colnames(relative_expression) <- c("AvgExprsPerCell_Lim1_pos", "AvgExprsPerCell_Lim1_neg", "CellsExpd_Lim1_pos", "CellsExpd_Lim1_neg")
 relative_expression$pos_div_neg <-relative_expression[,1]/relative_expression[,2]
 #Sort by relative expression
 relative_expression_sorted <- relative_expression[order(relative_expression$pos_div_neg),]
