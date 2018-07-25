@@ -119,20 +119,21 @@ monocle_theme_opts <- function()
     theme(panel.grid.major.x = element_blank(), panel.grid.major.y = element_blank()) + 
     theme(panel.background = element_rect(fill='white')) +
     theme(legend.key=element_blank()) +
-    theme(strip.text = element_text(size=15)) ##Added to change label size
+    theme(strip.text = element_text(size=20)) + ##Added to change label size
+    theme(text = element_text(size=20))  ##Added to change text size
 }
 
 #plot genes over pseudotime for neurons and progenitors ONLY (pseudotime = 13-35)
 my_genes <- row.names(subset(fData(gbm_current),
                              gene_short_name %in% c("ase","nSyb", "Nlg2", "Nlg3",  
-                                                  "Syt1", "Syt4", "cpx", "ChAT")))
+                                                  "Syt1", "Syt4", "cpx")))
 
 gbm_current <- gbm_current[my_genes,]
 setwd("/Users/Olga/Google Drive/Desplan Lab/Notebooks/Notebook 5/10X processing/20180725_PseudoTrajFigure/")
-png(file="TrajectoryValidatingGenes_fixed.png", width = 1000, height = 400)
-print(plot_genes_in_pseudotime_modified(gbm_current, color_by = "Pseudotime", nrow = 2, ncol = 4, 
-                               panel_order = c("ase","nSyb", "Nlg2", "Nlg3",  
-                                                "Syt1", "Syt4", "cpx", "ChAT")))
+png(file="TrajectoryValidatingGenes_fixed.png", width = 2000, height = 300)
+print(plot_genes_in_pseudotime_modified(gbm_current, color_by = "Pseudotime", nrow = 2, ncol = 8, 
+                               panel_order = c("ase","nSyb", "Nlg2", "Nlg3",  "Syt1", "Syt4", "cpx")), 
+                               cell_size = 1.5)
 dev.off()
 
 
