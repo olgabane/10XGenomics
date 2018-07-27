@@ -186,3 +186,10 @@ write.table(k20_repo_cluster_GBM_wGeneNames, "k20_repo_cluster_GBM_wGeneNames.tx
 write.table(k20_progenitor_cluster_GBM_wGeneNames, "k20_progenitor_cluster_GBM_wGeneNames.txt", sep = "\t")
 write.table(k20_Lawf_cluster_GBM_wGeneNames, "k20_Lawf_cluster_GBM_wGeneNames.txt", sep = "\t")
 write.table(k20_repo_progenitor_lawf_cluster_GBM_wGeneNames, "k20_repo_progenitor_lawf_cluster_GBM_wGeneNames.txt", sep = '\t')
+
+#Save relevant plots in Demo folder
+setwd("/Users/Olga/Desktop/Demo/20180531")
+png("PulledClusters.png", 600, 600, res =72)
+plot(k20_yto$TSNE.1, k20_yto$TSNE.2, col = paste(k20_yto[,6]), 
+     xlab = "TSNE.1", ylab = "TSNE.2", pch = 16, cex = 0.5, title("k=20, pulled clusters", adj = 0.05, line = -2), ylim=c(-50,50), xlim = c(-50, 50))
+dev.off()
