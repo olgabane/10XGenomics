@@ -36,11 +36,7 @@ df = data.frame(Barcode = x1, TSNE.1 = x2, TSNE.2 = x3,
                 kmeans_9_Barcode = x12[, 1], kmeans_9_Cluster = x12[,2],
                 kmeans_10_Barcode = x13[, 1], kmeans_10_Cluster = x13[,2])
 
-#make column names for color assignments
-color_column_list <-list()
-for(j in 2:10)
-  color_column_list[j-1] = paste("kmeans_", j, "_Color", sep = "")
-
+###Assign colors to clusters 1-16
 #make vector of 16 colors
 color_vect <- c("red", "darkorange", "yellow", "lightgreen", "tan3", "cyan", "dodgerblue", 
                 "darkred", "darkorchid2", "gray53", "black", "pink2", "darkmagenta", "darkcyan", 
@@ -50,11 +46,15 @@ color_vect <- c("red", "darkorange", "yellow", "lightgreen", "tan3", "cyan", "do
 for(i in 1:16)
   df$graphclust_Color[df$graphclust_Cluster == i] = color_vect[i]
 
+#make column names for color assignments for k= 2-10
+color_column_list <-list()
+for(j in 2:10)
+  color_column_list[j-1] = paste("kmeans_", j, "_Color", sep = "")
 #add columns to dataframe to assign colors to clusters using k-means 2-10 clustering
 for(j in 2:10)
   df[,color_column_list[[j-1]]] <- NA
 
-#cluster column list
+#cluster column name list
 cluster_column_list <-list()
 for(j in 2:10)
   cluster_column_list[j-1] = paste("kmeans_", j, "_Cluster", sep = "")
@@ -81,5 +81,18 @@ for(j in 2:10)
   dev.off()
 }
 
+#Save relevant plots in Demo folder
+setwd("/Users/Olga/Desktop/Demo/20180522")
+#plot and save clusters generated using graph-based clustering and k-means 2-10 clustering 
+png("clusters_kmeans_graph.png")
+plot(df$TSNE.1, df$TSNE.2, col = df$graphclust_Color, xlab = "TSNE.1", ylab = "TSNE.2", pch = 16, cex = 0.5, title("Graph based", adj = 0.05, line =-2))
+dev.off()
+
+for(j in 2:10)
+{
+  png(paste("clusters_kmeans",j, ".png"))
+  plot(df$TSNE.1, df$TSNE.2, col = df[,color_column_list[[j-1]]], xlab = "TSNE.1", ylab = "TSNE.2", pch = 16, cex = 0.5, title(paste("k =",j), adj = 0.05, line = -2))
+  dev.off()
+}
 
 
