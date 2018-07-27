@@ -18,7 +18,6 @@ genes <-c("elav", "repo")
 quartz("Neuron vs. glia", 8,5)
 visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
 
-
 #Lawf markers
 genes <-c("eya", "hth", "hbn", "Lim1")
 quartz("Lawf markers", 8,5)
@@ -131,3 +130,10 @@ visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits 
 genes <-c("pros")
 quartz("pros", 8,5)
 visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
+
+#Save relevant plots in Demo folder
+setwd("/Users/Olga/Desktop/Demo/20180528")
+#Save plots showing eya, hbn, hth, lim1 marker expression
+png("LawfMarkers.png", 800, 600, res =72)
+plot(visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4)))
+dev.off()
