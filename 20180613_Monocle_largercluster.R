@@ -1,4 +1,4 @@
-#20180613_Monocle_largercluster.R
+ #20180613_Monocle_largercluster.R
 #Monocle - arrange cells in pseudotime
 #Use progenitor, neuron, repo+ clusters this time
 #June 13, 2018, continued June 18
