@@ -2,7 +2,7 @@
 #Olga Minkina 
 #Plot clusters (manually, withouth cellranger). Similar to 20180522 script.
 
-setwd("/Users/Olga/Google Drive/Desplan Lab/Notebooks/Notebook 5/10X processing/20180528_Prince/Files from cellranger_reanalyze/analysis/tsne/2_components/")
+setwd("/Users/Olga/Google Drive/Desplan Lab/Notebooks/Notebook 5/10X processing/20180528_Prince/Files from cellranger_reanalyze/outs/analysis/tsne/2_components/")
 tsne_file <- read.csv("projection.csv")
 
 #get barcodes and tsne components
@@ -30,15 +30,15 @@ df = data.frame(Barcode = x1, TSNE.1 = x2, TSNE.2 = x3,
                 kmeans_19_Barcode = x19[, 1], kmeans_19_Cluster = x19[,2],
                 kmeans_20_Barcode = x20[, 1], kmeans_20_Cluster = x20[,2])
 
-#make column names for color assignments
-color_column_list <-list()
-for(j in 11:20)
-  color_column_list[j-10] = paste("kmeans_", j, "_Color", sep = "")
-
 #make vector of 20 colors
 color_vect <- c("red", "darkorange", "yellow", "lightgreen", "tan3", "cyan", "dodgerblue", 
                 "darkred", "darkorchid2", "gray53", "black", "pink2", "darkmagenta", "darkcyan", 
                 "navy", "darkgreen", "darkseagreen1", "darkslateblue", "khaki", "yellow4") 
+
+#make column names for color assignments
+color_column_list <-list()
+for(j in 11:20)
+  color_column_list[j-10] = paste("kmeans_", j, "_Color", sep = "")
 
 #add columns to dataframe to assign colors to clusters using k-means 11-20 clustering
 for(j in 11:20)
@@ -78,3 +78,13 @@ tsne_proj <- analysis_results$tsne
 png('kmeans_11to20_clusters_cellRanger.png', width = 800, height = 600)
 visualize_clusters(clu_res,tsne_proj[c("TSNE.1","TSNE.2")])
 dev.off()
+
+#Save relevant plots in Demo folder
+setwd("/Users/Olga/Desktop/Demo/20180530")
+#plot and save clusters generated  using k-means 11-20 clustering 
+for(j in 2:11)
+{
+  png(paste("clusters_kmeans",j+9, ".png"))
+  plot(df$TSNE.1, df$TSNE.2, col = df[,color_column_list[[j-1]]], xlab = "TSNE.1", ylab = "TSNE.2", pch = 16, cex = 0.5, title(paste("k =",j+9), adj = 0.05, line = -2))
+  dev.off()
+}
