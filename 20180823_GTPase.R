@@ -16,3 +16,7 @@ tsne_proj <- analysis_results$tsne
 genes <-c("Rac1", "Rac2", "Mtl")
 quartz("title", 8,5)
 visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
+
+genes <-c("Rho1")
+quartz("title", 8,5)
+visualize_gene_markers(gbm_log, genes, tsne_proj[c("TSNE.1", "TSNE.2")], limits = c(0, 4))
